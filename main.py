@@ -3,40 +3,73 @@ import random
 
 GAME_SIZE = 500
 CUBE_SIZE = 25
+BLACK = "#000000"
+RED = "#FF0000"
+GREEN = "#00FF00"
 
+
+class Snake:
+    def __init__(self):
+        self.coordinates = []
+        # List for coordinates of snake's head
+
+        self.blocks = []
+        # List for blocks attached to snake
+
+        self.coordinates.append([0, 0])
+        # Starting position of snake
+
+        for x, y in self.coordinates:
+            block = canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill=GREEN, tag="snake")
+            # Block's that act as snake's body
+
+            self.blocks.append(block)
 
 class Cube:
     def __init__(self):
         x = random.randint(0, (GAME_SIZE / CUBE_SIZE) - 1) * CUBE_SIZE
         y = random.randint(0, (GAME_SIZE / CUBE_SIZE) - 1) * CUBE_SIZE
+        # Find random x and y coordinates for cube
+
         self.coordinates = [x, y]
+        # Assign these random coordinates to self
 
-        canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill="#00FF00", tag="cube")
+        canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill=RED, tag="cube")
+        # Draw rectangle at these coordinates
 
 
-# Create window for game
-# Name it 'SNAKE'
-# Don't allow it to be resized
 window = Tk()
+# Create window for game
+
 window.title("SNAKE")
+# Name it 'SNAKE'
+
 window.resizable(False, False)
+# Don't allow it to be resized
 
-# Points represents the number of cubes on snake
 points = 0
+# Points represents the number of cubes on snake
 
-# Label for the score
 label = Label(window, text="Points: {}".format(points), font=('Times', 30))
+# Label for the score
+
 label.pack()
+# Pack changes
 
+canvas = Canvas(window, bg=BLACK, height=GAME_SIZE, width=GAME_SIZE)
 # Canvas for the snake
-canvas = Canvas(window, bg="#000000", height=500, width=500)
-canvas.pack()
 
-# Update window so it renders
+canvas.pack()
+# Pack changes
+
 window.update()
+# Update window so it renders
 
 cube = Cube()
+# Cube object is created
 
+snake = Snake()
+# Snake object is created
 
-# Run the main loop for the window
 window.mainloop()
+# Run the main loop for the window
