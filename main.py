@@ -1,9 +1,18 @@
 from tkinter import *
 import random
 
+GAME_SIZE = 500
+CUBE_SIZE = 25
+
+
 class Cube:
     def __init__(self):
-        pass
+        x = random.randint(0, (GAME_SIZE / CUBE_SIZE) - 1) * CUBE_SIZE
+        y = random.randint(0, (GAME_SIZE / CUBE_SIZE) - 1) * CUBE_SIZE
+        self.coordinates = [x, y]
+
+        canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill="#00FF00", tag="cube")
+
 
 # Create window for game
 # Name it 'SNAKE'
