@@ -3,8 +3,6 @@ import random
 
 GAME_SIZE = 500
 CUBE_SIZE = 25
-SPEED = 50
-START_LENGTH = 3
 BLACK = "#000000"
 RED = "#FF0000"
 GREEN = "#00FF00"
@@ -18,7 +16,7 @@ class Snake:
         self.blocks = []
         # List for blocks attached to snake
 
-        for i in range(0, START_LENGTH):
+        for i in range(0, 3):
             self.coordinates.append([0, 0])
             # Starting position of snake
 
@@ -45,14 +43,14 @@ class Cube:
 def turn(snake, cube):
     x, y = snake.coordinates[0]
 
-    if dir == 'left':
+    if cur_direction == 'left':
         x -= CUBE_SIZE
-    elif dir == 'right':
+    elif cur_direction == 'right':
         x += CUBE_SIZE
-    elif dir == 'up':
-        y += CUBE_SIZE
-    elif dir == 'down':
+    elif cur_direction == 'up':
         y -= CUBE_SIZE
+    elif cur_direction == 'down':
+        y += CUBE_SIZE
 
     snake.coordinates.insert(0, (x, y))
     # Add coordinates for block to head of snake
@@ -79,28 +77,28 @@ def turn(snake, cube):
         del snake.blocks[-1]
         # Delete the last block in snake if no cube eaten
 
-    window.after(SPEED, turn, snake, cube)
+    window.after(50, turn, snake, cube)
     # Put change into effect on window
 
 
-def switch_direction(new_dir):
-    global dir
+def switch_direction(new_direction):
+    global cur_direction
 
-    if new_dir == 'up':
-        if dir != 'down':
-            dir = new_dir
+    if new_direction == 'up':
+        if cur_direction != 'down':
+            cur_direction = new_direction
             # Change direction to down if it isn't already up
-    elif new_dir == 'down':
-        if dir != 'up':
-            dir = new_dir
+    elif new_direction == 'down':
+        if cur_direction != 'up':
+            cur_direction = new_direction
             # Change direction to up if it isn't already down
-    elif new_dir == 'left':
-        if dir != 'right':
-            dir = new_dir
+    elif new_direction == 'left':
+        if cur_direction != 'right':
+            cur_direction = new_direction
             # Change direction to left if it isn't already right
-    elif new_dir == 'right':
-        if dir != 'left':
-            dir = new_dir
+    elif new_direction == 'right':
+        if cur_direction != 'left':
+            cur_direction = new_direction
             # Change direction to right if it isn't already left
 
 
@@ -114,7 +112,7 @@ window.resizable(False, False)
 # Don't allow it to be resized
 
 points = 0
-dir = 'down'
+cur_direction = "down"
 # Points represents the number of cubes on snake
 
 label = Label(window, text="Points: {}".format(points), font=('Times', 30))
