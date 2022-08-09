@@ -3,7 +3,7 @@ import random
 
 GAME_SIZE = 500
 CUBE_SIZE = 25
-SPEED = 50
+SPEED = 200
 BLACK = "#000000"
 RED = "#FF0000"
 GREEN = "#00FF00"
@@ -22,22 +22,37 @@ class Snake:
             # Starting position of snake
 
         for x, y in self.coordinates:
-            head = canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill=GREEN)
+            head = canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill=GREEN, tag="snake")
             # Block's that act as snake's body
 
             self.blocks.append(head)
 
 
 class Cube:
-    def __init__(self):
-        x = random.randint(0, GAME_SIZE - CUBE_SIZE)
-        y = random.randint(0, GAME_SIZE - CUBE_SIZE)
+    def __init__(self, snake):
+        cube_x = 0
+        cube_y = 0
         # Find random x and y coordinates for cube
 
-        self.coordinates = [x, y]
+        unsafe_spawn = True
+        while unsafe_spawn:
+            unsafe_spawn = False
+            cube_x = random.randint(0, GAME_SIZE / CUBE_SIZE - 1) * CUBE_SIZE
+            cube_y = random.randint(0, GAME_SIZE / CUBE_SIZE - 1) * CUBE_SIZE
+            # Generate random spawn for cube
+
+            for block in snake.coordinates[0:]:
+                if cube_x == block[0]:
+                    if cube_y == block[1]:
+                        unsafe_spawn = True
+                        # If cube spawn has same coordinates as any part of snake,
+                        # then get new coordinates.
+
+        self.coordinates = [cube_x, cube_y]
         # Assign these random coordinates to self
 
-        canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill=RED)
+        canvas.create_rectangle(cube_x, cube_y, cube_x + CUBE_SIZE, cube_y + CUBE_SIZE,
+                                fill=RED, tag="cube")
         # Draw rectangle at these coordinates
 
 
@@ -71,7 +86,7 @@ def turn(snake, cube):
             # If head of snake eats the cube, then add a point
 
             canvas.delete("cube")
-            cube = Cube()
+            cube = Cube(snake)
             # Delete the current cube object and create a new one
     else:
         del snake.coordinates[-1]
@@ -178,7 +193,7 @@ window.bind('<s>', lambda event: switch_direction('down'))
 # Set key binds for switching direction of snake
 
 snake = Snake()
-cube = Cube()
+cube = Cube(snake)
 # Snake and Cube objects are created
 
 turn(snake, cube)
