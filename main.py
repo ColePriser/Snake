@@ -3,6 +3,7 @@ import random
 
 GAME_SIZE = 500
 CUBE_SIZE = 25
+SPEED = 50
 BLACK = "#000000"
 RED = "#FF0000"
 GREEN = "#00FF00"
@@ -21,7 +22,7 @@ class Snake:
             # Starting position of snake
 
         for x, y in self.coordinates:
-            head = canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill=GREEN, tag="snake")
+            head = canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill=GREEN)
             # Block's that act as snake's body
 
             self.blocks.append(head)
@@ -29,19 +30,20 @@ class Snake:
 
 class Cube:
     def __init__(self):
-        x = random.randint(0, (GAME_SIZE / CUBE_SIZE) - 1) * CUBE_SIZE
-        y = random.randint(0, (GAME_SIZE / CUBE_SIZE) - 1) * CUBE_SIZE
+        x = random.randint(0, GAME_SIZE - CUBE_SIZE)
+        y = random.randint(0, GAME_SIZE - CUBE_SIZE)
         # Find random x and y coordinates for cube
 
         self.coordinates = [x, y]
         # Assign these random coordinates to self
 
-        canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill=RED, tag="cube")
+        canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill=RED)
         # Draw rectangle at these coordinates
 
 
 def turn(snake, cube):
     x, y = snake.coordinates[0]
+    # Coordinates for head of snake
 
     if cur_direction == 'left':
         x -= CUBE_SIZE
@@ -78,10 +80,18 @@ def turn(snake, cube):
         # Delete the last block in snake if no cube eaten
 
     if hit_wall(snake):
-        print("Game over\n")
+        canvas.delete(ALL)
+        canvas.create_text(canvas.winfo_width()/2, canvas.winfo_height()/2,
+                           font=('Times', 50), text="Game Over!", fill="red")
+        # End game
+    elif hit_body(snake):
+        canvas.delete(ALL)
+        canvas.create_text(canvas.winfo_width() / 2, canvas.winfo_height() / 2,
+                           font=('Times', 50), text="Game Over!", fill="red")
+        # End game
     else:
-        window.after(50, turn, snake, cube)
-    # Put change into effect on window
+        window.after(SPEED, turn, snake, cube)
+        # Put change into effect on window
 
 
 def switch_direction(new_direction):
@@ -107,13 +117,30 @@ def switch_direction(new_direction):
 
 def hit_wall(snake):
     x, y = snake.coordinates[0]
-
+    # Coordinates for head of snake
     if x < 0 or x > GAME_SIZE - 1:
         return True
+        # Head of snake has gone out of bounds in x direction
     elif y < 0 or y > GAME_SIZE - 1:
         return True
+        # Head of snake has gone out of bounds in y direction
     else:
         return False
+        # Head of snake has NOT gone out of bounds
+
+
+def hit_body(snake):
+    x, y = snake.coordinates[0]
+    # Coordinates for head of snake
+
+    for block in snake.coordinates[1:]:
+        if x == block[0]:
+            if y == block[1]:
+                return True
+                # If block hits head, then snake has hit itself
+
+    return False
+    # Otherwise, snake has NOT hit itself
 
 
 window = Tk()
