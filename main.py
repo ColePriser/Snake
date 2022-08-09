@@ -77,7 +77,10 @@ def turn(snake, cube):
         del snake.blocks[-1]
         # Delete the last block in snake if no cube eaten
 
-    window.after(50, turn, snake, cube)
+    if hit_wall(snake):
+        print("Game over\n")
+    else:
+        window.after(50, turn, snake, cube)
     # Put change into effect on window
 
 
@@ -100,6 +103,17 @@ def switch_direction(new_direction):
         if cur_direction != 'left':
             cur_direction = new_direction
             # Change direction to right if it isn't already left
+
+
+def hit_wall(snake):
+    x, y = snake.coordinates[0]
+
+    if x < 0 or x > GAME_SIZE - 1:
+        return True
+    elif y < 0 or y > GAME_SIZE - 1:
+        return True
+    else:
+        return False
 
 
 window = Tk()
