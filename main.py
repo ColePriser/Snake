@@ -1,9 +1,11 @@
+import sys
+import os
 from tkinter import *
 import random
 
 GAME_SIZE = 500
 CUBE_SIZE = 25
-SPEED = 200
+SPEED = 50
 BLACK = "#000000"
 RED = "#FF0000"
 GREEN = "#00FF00"
@@ -95,15 +97,11 @@ def turn(snake, cube):
         # Delete the last block in snake if no cube eaten
 
     if hit_wall(snake):
-        canvas.delete(ALL)
-        canvas.create_text(canvas.winfo_width()/2, canvas.winfo_height()/2,
-                           font=('Times', 50), text="Game Over!", fill="red")
-        # End game
+        game_over()
+        # Run game over function
     elif hit_body(snake):
-        canvas.delete(ALL)
-        canvas.create_text(canvas.winfo_width() / 2, canvas.winfo_height() / 2,
-                           font=('Times', 50), text="Game Over!", fill="red")
-        # End game
+        game_over()
+        # Run game over function
     else:
         window.after(SPEED, turn, snake, cube)
         # Put change into effect on window
@@ -156,6 +154,25 @@ def hit_body(snake):
 
     return False
     # Otherwise, snake has NOT hit itself
+
+
+def game_over():
+    canvas.delete(ALL)
+    canvas.create_text(canvas.winfo_width() / 2, canvas.winfo_height() / 2,
+                       font=('Times', 50), text="Game Over!", fill="red")
+    # End game
+
+    restart_button = Button(window, text="Play Again", bg="#7f7f7f",
+                            font=('bold', 20), command=play_again)
+    restart_button.configure(width=10, activebackground="#33B5E5")
+    canvas.create_window(250, 375, window=restart_button)
+    # Button prompts user to restart
+
+
+def play_again():
+    python = sys.executable
+    os.execl(python, python, *sys.argv)
+    # Restarts the game
 
 
 window = Tk()
