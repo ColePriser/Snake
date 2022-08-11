@@ -16,18 +16,17 @@ class Snake:
         self.coordinates = []
         # List for coordinates of snake's head
 
-        self.blocks = []
-        # List for blocks attached to snake
+        self.body = []
+        # List for body attached to snake
 
-        for i in range(0, 3):
-            self.coordinates.append([0, 0])
-            # Starting position of snake
+        self.coordinates.append([0, 0])
+        # Starting position of snake
 
         for x, y in self.coordinates:
             head = canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill=GREEN, tag="snake")
             # Block's that act as snake's body
 
-            self.blocks.append(head)
+            self.body.append(head)
 
 
 class Cube:
@@ -43,9 +42,9 @@ class Cube:
             cube_y = random.randint(0, GAME_SIZE / CUBE_SIZE - 1) * CUBE_SIZE
             # Generate random spawn for cube
 
-            for block in snake.coordinates[0:]:
-                if cube_x == block[0]:
-                    if cube_y == block[1]:
+            for body in snake.coordinates[0:]:
+                if cube_x == body[0]:
+                    if cube_y == body[1]:
                         unsafe_spawn = True
                         # If cube spawn has same coordinates as any part of snake,
                         # then get new coordinates.
@@ -77,31 +76,31 @@ def turn(snake, cube):
     head = canvas.create_rectangle(x, y, x + CUBE_SIZE, y + CUBE_SIZE, fill=GREEN)
     # Create block to add to snake
 
-    snake.blocks.insert(0, head)
-    # Add block to list of current blocks of snake
+    snake.body.insert(0, head)
+    # Add block to list of current body of snake
 
-    if x == cube.coordinates[0]:
-        if y == cube.coordinates[1]:
-            global points
-            points += 1
-            label.config(text="Points: {}".format(points))
-            # If head of snake eats the cube, then add a point
+    if x == cube.coordinates[0] and y == cube.coordinates[1]:
+        global score
+        score += 1
+        label.config(text="Score: {}".format(score))
+        # If head of snake eats the cube, then add a one to the score
 
-            canvas.delete("cube")
-            cube = Cube(snake)
-            # Delete the current cube object and create a new one
+        canvas.delete("cube")
+        cube = Cube(snake)
+        # Delete the current cube object and create a new one
+
     else:
         del snake.coordinates[-1]
-        canvas.delete(snake.blocks[-1])
-        del snake.blocks[-1]
+        canvas.delete(snake.body[-1])
+        del snake.body[-1]
         # Delete the last block in snake if no cube eaten
 
     if hit_wall(snake):
         game_over()
-        # Run game over function
+        # Run game over function if snake hits wall
     elif hit_body(snake):
         game_over()
-        # Run game over function
+        # Run game over function if snake hits itself
     else:
         window.after(SPEED, turn, snake, cube)
         # Put change into effect on window
@@ -184,11 +183,11 @@ window.title("SNAKE")
 window.resizable(False, False)
 # Don't allow it to be resized
 
-points = 0
+score = 1
 cur_direction = "down"
-# Points represents the number of cubes on snake
+# Score represents the number of cubes on the snake
 
-label = Label(window, text="Points: {}".format(points), font=('Times', 30))
+label = Label(window, text="Score: {}".format(score), font=('Times', 30))
 label.pack()
 # Label for the score
 
